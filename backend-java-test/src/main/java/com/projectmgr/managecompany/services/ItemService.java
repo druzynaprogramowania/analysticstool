@@ -1,8 +1,11 @@
 package com.projectmgr.managecompany.services;
 
 import com.projectmgr.managecompany.exceptions.ItemIdException;
+import com.projectmgr.managecompany.exceptions.ItemNotFoundException;
 import com.projectmgr.managecompany.models.Item;
+import com.projectmgr.managecompany.models.User;
 import com.projectmgr.managecompany.repositories.ItemRepository;
+import com.projectmgr.managecompany.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,23 +15,15 @@ public class ItemService{
     @Autowired
     private ItemRepository itemRepository;
 
+    @Autowired
+    private UserRepository userRepository;
 
-    public Item saveOrUpdateItem(Item item){
 
-//        if(item.getId() != null){
-//            Item existingItem = itemRepository.findByItemIdentifier(item.getItemIdentifier());
-//            if(existingItem !=null &&(!existingItem.getProjectLeader().equals(username))){
-//                throw new ItemNotFoundException("Project not found in your account");
-//            }else if(existingItem == null){
-//                throw new ItemNotFoundException("Project with ID: '"+item.getItemIdentifier()+"' cannot be updated because it doesn't exist");
-//            }
-//        }
-
+    public Item saveOrUpdateItem(Item item, String username){
 
         try {
-//            User user = userRepository.findByUsername(username);
-//            item.setUser(user);
-//            item.setProjectLeader(user.getUsername());
+            User user = userRepository.findByUsername(username);
+            item.setUser(user);
 
             item.setItemIdentifier(item.getItemIdentifier().toUpperCase());
 
@@ -39,7 +34,7 @@ public class ItemService{
         }
     }
 
-    public Item findItemByIdentifier (String itemId){
+    public Item findItemByIdentifier (String itemId, String username){
 
         Item item = itemRepository.findByItemIdentifier(itemId.toUpperCase());
 
@@ -54,20 +49,7 @@ public class ItemService{
         return itemRepository.findAll();
     }
 
-    public void deleteItemByIdentifier(String itemId){
-//        Item item = itemRepository.findByItemIdentifier(itemId);
-
-//        if (item == null){
-//            throw new ItemIdException("Cannot find Item with ID" + itemId + ". This item doesn't exist");
-//        }
-
-        Item item = itemRepository.findByItemIdentifier(itemId.toUpperCase());
-
-        if(item == null) {
-            throw new ItemIdException("Cannot Item with ID '" + itemId + "' . This item does not exist");
-        }
-        itemRepository.delete(item);
-//        itemRepository.delete(findItemByIdentifier(itemId));
+    public void deleteItemByIdentifier(String itemId, String username){
+        itemRepository.delete(findItemByIdentifier(itemId,username));
     }
-
 }

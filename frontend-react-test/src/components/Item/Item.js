@@ -10,24 +10,11 @@ class Item extends Component {
         this.props.deleteItem(id);
     }
 
-
-    // id
-    // itemName
-    // itemIdentifier
-    // typeOfItem
-    // quantity
-    // description
-    // start_date
-    // end_date
-
     render() { 
         const { item } = this.props;
         return ( 
             <>
             <tr className="rows">
-                {/* <td>
-                    {item.id}
-                </td> */}
                 <td>
                     {item.itemIdentifier}
                 </td>

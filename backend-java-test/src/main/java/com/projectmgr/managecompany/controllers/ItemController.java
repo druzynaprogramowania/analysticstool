@@ -30,7 +30,7 @@ public class ItemController {
     //creating the route
     //BindingResult analyzes the object and it determines whether or not there are errors
     @PostMapping("")
-    public ResponseEntity<?> createNewItem(@Valid @RequestBody Item item, BindingResult result){ // Principal we use when someone don't have access to token
+    public ResponseEntity<?> createNewItem(@Valid @RequestBody Item item, BindingResult result, Principal principal){ // Principal we use when someone don't have access to token
 
         ResponseEntity<?> errorMap = mapValidationErrorService.MapValidationService(result);
         if (errorMap!=null) {
@@ -38,14 +38,14 @@ public class ItemController {
         }
 
         //happy path
-        Item item1 = itemService.saveOrUpdateItem(item);
+        Item item1 = itemService.saveOrUpdateItem(item, principal.getName());
         return new ResponseEntity<Item>(item1,HttpStatus.CREATED);
     }
 
     @GetMapping("/{itemId}")
-    public ResponseEntity<?> getItemById(@PathVariable String itemId){
+    public ResponseEntity<?> getItemById(@PathVariable String itemId, Principal principal){
 
-        Item item = itemService.findItemByIdentifier(itemId);
+        Item item = itemService.findItemByIdentifier(itemId, principal.getName());
 
         return new ResponseEntity<Item>(item, HttpStatus.OK);
     }
@@ -56,8 +56,8 @@ public class ItemController {
     }
 
     @DeleteMapping("/{itemId}")
-    public ResponseEntity<?> deleteItem (@PathVariable String itemId){
-        itemService.deleteItemByIdentifier(itemId);
+    public ResponseEntity<?> deleteItem (@PathVariable String itemId, Principal principal){
+        itemService.deleteItemByIdentifier(itemId, principal.getName());
 
         return new ResponseEntity<String>("Item with ID " + itemId + " was deleted", HttpStatus.OK);
     }
